@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6cd6a9ce-99df-489b-9c9f-8c5c3fda68ad" name="Changes" comment="init task">
-      <change afterPath="$PROJECT_DIR$/src/main/java/InitData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/AnalyticTest.java" afterDir="false" />
+    <list default="true" id="6cd6a9ce-99df-489b-9c9f-8c5c3fda68ad" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +21,9 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
@@ -81,7 +84,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature",
+    "git-widget-placeholder": "#3 on feature",
     "last_opened_file_path": "C:/Users/Admin/IdeaProjects/intership-practical-course/JavaCore/SalsesAndCustomerAnalysis",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
