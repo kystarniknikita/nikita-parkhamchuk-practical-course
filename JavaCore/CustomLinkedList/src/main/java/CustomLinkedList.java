@@ -2,8 +2,8 @@ import java.text.MessageFormat;
 import java.util.NoSuchElementException;
 
 public class CustomLinkedList<E> {
-    private Node<E> head = null;
-    private Node<E> tail = null;
+    private Node<E> head;
+    private Node<E> tail;
     private int size = 0;
 
     public int size() {
@@ -20,9 +20,9 @@ public class CustomLinkedList<E> {
         }
     }
 
-    public void addFirst(E el){
+    public void addFirst(E el) {
         Node<E> newNode = new Node<>(el);
-        if (head == null){
+        if (head == null) {
             head = tail = newNode;
         } else {
             newNode.next = head;
@@ -32,11 +32,11 @@ public class CustomLinkedList<E> {
         size++;
     }
 
-    public void addLast(E el){
+    public void addLast(E el) {
         Node<E> newNode = new Node<>(el);
-        if (tail == null){
+        if (tail == null) {
             tail = head = newNode;
-        }else {
+        } else {
             tail.next = newNode;
             newNode.prev = tail;
             tail = newNode;
@@ -44,20 +44,20 @@ public class CustomLinkedList<E> {
         size++;
     }
 
-    public void add(int index, E el){
+    public void add(int index, E el) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException(MessageFormat.format("Index: {0}, size: {1}", index, size));
         }
-        if (index == 0){
+        if (index == 0) {
             addFirst(el);
             return;
         }
-        if (index == size){
+        if (index == size) {
             addLast(el);
             return;
         }
         Node<E> current = head;
-        for (int i = 0; i < index; i++){
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         Node<E> newNode = new Node<>(el);
@@ -71,37 +71,37 @@ public class CustomLinkedList<E> {
         size++;
     }
 
-    public E getFirst(){
-        if (head == null){
+    public E getFirst() {
+        if (head == null) {
             throw new NoSuchElementException();
         }
         return head.value;
     }
 
-    public E getLast(){
-        if (tail == null){
+    public E getLast() {
+        if (tail == null) {
             throw new NoSuchElementException();
         }
         return tail.value;
     }
 
-    public E get(int index){
+    public E get(int index) {
         checkIndex(index);
         Node<E> current = head;
-        for (int i = 0; i < index; i++){
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         return current.value;
     }
 
-    public E removeFirst(){
-        if (head == null){
+    public E removeFirst() {
+        if (head == null) {
             throw new NoSuchElementException();
         }
         E value = head.value;
-        if (head == tail){
+        if (head == tail) {
             head = tail = null;
-        }else {
+        } else {
             head = head.next;
             head.prev = null;
         }
@@ -109,12 +109,12 @@ public class CustomLinkedList<E> {
         return value;
     }
 
-    public E removeLast(){
-        if (tail == null){
+    public E removeLast() {
+        if (tail == null) {
             throw new NoSuchElementException();
         }
         E value = tail.value;
-        if (head == tail){
+        if (head == tail) {
             head = tail = null;
         } else {
             tail = tail.prev;
@@ -124,17 +124,17 @@ public class CustomLinkedList<E> {
         return value;
     }
 
-    public E remove(int index){
+    public E remove(int index) {
         checkIndex(index);
-        if (index == 0){
+        if (index == 0) {
             return removeFirst();
         }
-        if (index == size - 1){
+        if (index == size - 1) {
             return removeLast();
         }
 
         Node<E> current = head;
-        for (int i = 0; i < index; i++){
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
 
@@ -149,8 +149,8 @@ public class CustomLinkedList<E> {
         return nodeToRemove.value;
     }
 
-    private void checkIndex(int index){
-        if (index < 0 || index >= size){
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(MessageFormat.format("Index: {0}, size: {1}", index, size));
         }
     }
