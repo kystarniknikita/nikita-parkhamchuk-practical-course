@@ -1,0 +1,4 @@
+.idea/
+.gradle/
+*.imlgit add .gitignore
+     git commit -m "Ignore IntelliJ IDEA project files"
