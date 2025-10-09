@@ -8,14 +8,3 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-.idea/
-.gradle/
-build/
-out/
-.idea/
-*.iml
-
-.gradle/
-gradlew
-gradlew.bat
-gradle/
