@@ -1,93 +1,151 @@
 name: CI Pipeline
 
 on:
-  push:
-    branches:
-      - feature/user-service/db-schema
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
+      - feature/**
 
 jobs:
   build:
-    name: Build
+    name:  Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Find gradlew path
+        id: find_gradlew
+        run: |
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo " gradlew not found"
+            exit 1
+          fi
+          echo " gradlew found at: $GRADLEW_PATH"
+          GRADLEW_DIR=$(dirname "$GRADLEW_PATH")
+          echo "GRADLEW_DIR=$GRADLEW_DIR" >> $GITHUB_ENV
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
           cache: gradle
 
       - name: Build project
-        run: ./gradlew clean build -x test
+        run: |
+          cd "$GRADLEW_DIR"
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
 
   test:
-    name: Test
+    name: ✅ Run Tests
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
           cache: gradle
 
+      - name: Find gradlew path
+        id: find_gradlew
+        run: |
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo " gradlew not found"
+            exit 1
+          fi
+          echo " gradlew found at: $GRADLEW_PATH"
+          GRADLEW_DIR=$(dirname "$GRADLEW_PATH")
+          echo "GRADLEW_DIR=$GRADLEW_DIR" >> $GITHUB_ENV
+
       - name: Run tests
-        run: ./gradlew test
+        run: |
+          cd "$GRADLEW_DIR"
+          chmod +x ./gradlew
+          ./gradlew test
+
       - name: Archive test reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: build/test-results/
+          path: build/test-results/test
 
-  code-analysis:
-    name: SonarQube Analysis
+  sonarqube:
+    name: 🔍 SonarQube Analysis
     runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
           cache: gradle
 
+      - name: Find gradlew path
+        id: find_gradlew
+        run: |
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo " gradlew not found"
+            exit 1
+          fi
+          echo " gradlew found at: $GRADLEW_PATH"
+          GRADLEW_DIR=$(dirname "$GRADLEW_PATH")
+          echo "GRADLEW_DIR=$GRADLEW_DIR" >> $GITHUB_ENV
+
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube \
-          -Dsonar.projectKey=kystarniknikita_nikita-parkhamchuk-practical-course
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=$SONAR_TOKEN
+        run: |
+          cd "$GRADLEW_DIR"
+          chmod +x ./gradlew
+          ./gradlew sonarqube \
+            -Dsonar.projectKey=kystarniknikita_nikita-parkhamchuk-practical-course \
+            -Dsonar.organization=kystarniknikita \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
   docker:
-    name: Build & Push Docker Image
+    name:  Build & Push Docker Image
     runs-on: ubuntu-latest
-    needs: code-analysis
+    needs: sonarqube
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Find gradlew path
+        id: find_gradlew
+        run: |
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          GRADLEW_DIR=$(dirname "$GRADLEW_PATH")
+          echo "GRADLEW_DIR=$GRADLEW_DIR" >> $GITHUB_ENV
+
       - name: Build Docker image
-        run: docker build -t nikitakyst/user-service:latest
+        run: |
+          cd "$GRADLEW_DIR"
+          docker build -t ${{ secrets.DOCKER_USER }}/user-service:latest .
 
       - name: Push Docker image
-        run: docker push nikitakyst/user-service:latest
+        run: docker push ${{ secrets.DOCKER_USER }}/user-service:latest
