@@ -127,4 +127,4 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_USER }}/user-service:latest .
-          docker push ${{ secrets.DOCKER_USER }}/user-service:latest
+          docker push nikitakyst/user-service:latest
