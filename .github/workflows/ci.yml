@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - feature/user-service/db-schema
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
