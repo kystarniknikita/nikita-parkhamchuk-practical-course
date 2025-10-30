@@ -1,37 +1,33 @@
 package com.example.UserService.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Table(name = "card_info")
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "card_info")
 @Getter
 @Setter
-public class CardInfo implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CardInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 16)
+    private String number;
+
+    @Column(nullable = false)
+    private LocalDateTime expirationDate;
+
+    @Column(nullable = false, length = 100)
+    private String holder;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @Column(name = "number", nullable = false)
-    private Long number;
-
-    @Column(name = "holder", nullable = false)
-    private String holder;
-
-    @Column(name = "expiration_date", nullable = false)
-    private LocalDateTime expirationDate;
-
 }

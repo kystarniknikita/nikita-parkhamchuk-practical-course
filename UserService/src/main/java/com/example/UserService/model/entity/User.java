@@ -1,40 +1,51 @@
 package com.example.UserService.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "users")
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "users")
 @Getter
 @Setter
-public class User implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Column(name = "birth_date")
+    @Column(name = "birth_date", nullable = false)
     private LocalDateTime birthDate;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @OneToMany(
+            mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER
+    )
     private List<CardInfo> cards = new ArrayList<>();
+
+    public void addCardInfo(CardInfo card) {
+        cards.add(card);
+        card.setUser(this);
+    }
+
+    public void removeCardInfo(CardInfo card) {
+        cards.remove(card);
+        card.setUser(null);
+    }
 }
+
