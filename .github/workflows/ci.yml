@@ -74,10 +74,10 @@ jobs:
 
       - name: Skip tests notice
         if: env.HAS_GRADLEW != 'true'
-        run: echo "⏭️ No gradlew file found, skipping tests."
+        run: echo " No gradlew file found, skipping tests."
 
   sonarqube:
-    name: 🔍 SonarQube Analysis
+    name:  SonarQube Analysis
     runs-on: ubuntu-latest
     needs: test
     steps:
