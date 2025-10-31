@@ -29,7 +29,7 @@ jobs:
           cache: gradle
 
       - name: Build project
-        working-directory: UserService   # 👈 ВАЖНО: работать из этой папки
+        working-directory: UserService 
         run: |
           chmod +x ./gradlew
           ./gradlew clean build -x test
@@ -50,7 +50,7 @@ jobs:
           cache: gradle
 
       - name: Run tests
-        working-directory: UserService   # 👈 Тоже запускаем из UserService
+        working-directory: UserService 
         run: |
           chmod +x ./gradlew
           ./gradlew test
