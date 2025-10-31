@@ -27,9 +27,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Grant execute permission for Gradle wrapper
+        working-directory: UserService
+        run: chmod +x ./gradlew
+
       - name: Build project
         working-directory: UserService 
-        run: ./gradlew :user-service:test
+        run: ./gradlew :user-service:build
 
   test:
     name: Tests
@@ -45,12 +49,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Grant execute permission for Gradle wrapper
+        working-directory: UserService
+        run: chmod +x ./gradlew
+
       - name: Run tests
         working-directory: UserService
         run: ./gradlew :user-service:test
-    
-
-      
 
   sonarqube:
     name: SonarQube Analysis
@@ -67,12 +72,15 @@ jobs:
           java-version: '17'
           cache: gradle
 
+      - name: Grant execute permission for Gradle wrapper
+        working-directory: UserService
+        run: chmod +x ./gradlew
+
       - name: SonarQube analysis
         working-directory: UserService
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          chmod +x ./gradlew
           ./gradlew sonarqube \
             -Dsonar.projectKey=kystarniknikita_nikita-parkhamchuk-practical-course \
             -Dsonar.organization=kystarniknikita \
