@@ -1,37 +1,31 @@
 name: CI Pipeline
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
       - feature/**
+    paths:
+      - 'UserService/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'UserService/**'
 
 jobs:
   build:
-    name:  Build
+    name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: UserService
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Locate gradlew
-        id: locate_gradlew
-        run: |
-          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1 || true)
-          if [ -z "$GRADLEW_PATH" ]; then
-            echo " gradlew not found — build will be skipped."
-            echo "HAS_GRADLEW=false" >> $GITHUB_ENV
-          else
-            echo " gradlew found at: $GRADLEW_PATH"
-            echo "HAS_GRADLEW=true" >> $GITHUB_ENV
-            echo "GRADLEW_DIR=$(dirname $GRADLEW_PATH)" >> $GITHUB_ENV
-          fi
-
       - name: Set up JDK 17
-        if: env.HAS_GRADLEW == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -39,26 +33,23 @@ jobs:
           cache: gradle
 
       - name: Build project
-        if: env.HAS_GRADLEW == 'true'
         run: |
-          cd "$GRADLEW_DIR"
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
-      - name: Skip build notice
-        if: env.HAS_GRADLEW != 'true'
-        run: echo " No gradlew file found, skipping build step."
-
   test:
-    name:  Tests
+    name: Tests
     runs-on: ubuntu-latest
     needs: build
+    defaults:
+      run:
+        working-directory: UserService
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        if: env.HAS_GRADLEW == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -66,26 +57,23 @@ jobs:
           cache: gradle
 
       - name: Run tests
-        if: env.HAS_GRADLEW == 'true'
         run: |
-          cd "$GRADLEW_DIR"
           chmod +x ./gradlew
           ./gradlew test
 
-      - name: Skip tests notice
-        if: env.HAS_GRADLEW != 'true'
-        run: echo " No gradlew file found, skipping tests."
-
   sonarqube:
-    name:  SonarQube Analysis
+    name: SonarQube Analysis
     runs-on: ubuntu-latest
     needs: test
+    defaults:
+      run:
+        working-directory: UserService
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        if: env.HAS_GRADLEW == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -93,11 +81,9 @@ jobs:
           cache: gradle
 
       - name: SonarQube analysis
-        if: env.HAS_GRADLEW == 'true'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          cd "$GRADLEW_DIR"
           chmod +x ./gradlew
           ./gradlew sonarqube \
             -Dsonar.projectKey=kystarniknikita_nikita-parkhamchuk-practical-course \
@@ -105,15 +91,15 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      - name: Skip SonarQube notice
-        if: env.HAS_GRADLEW != 'true'
-        run: echo " No gradlew file found, skipping SonarQube analysis."
-
   docker:
-    name:  Docker Image
+    name: Docker Image
     runs-on: ubuntu-latest
     needs: sonarqube
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: UserService
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -124,7 +110,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Build and push Docker image
         run: |
           docker build -t nikitakyst/user-service:latest .
           docker push nikitakyst/user-service:latest
