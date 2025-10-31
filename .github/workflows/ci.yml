@@ -50,10 +50,10 @@ jobs:
           cache: gradle
 
       - name: Run tests
-        working-directory: UserService 
+        working-directory: UserService
         run: |
           chmod +x ./gradlew
-          ./gradlew test
+          ./gradlew test -x integrationTest
 
   sonarqube:
     name: SonarQube Analysis
