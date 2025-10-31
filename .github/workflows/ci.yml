@@ -26,13 +26,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
 
       - name: Build project
         working-directory: UserService 
-        run: |
-          chmod +x ./gradlew
-          ./gradlew clean build -x test
+        run: ./gradlew :user-service:test
 
   test:
     name: Tests
