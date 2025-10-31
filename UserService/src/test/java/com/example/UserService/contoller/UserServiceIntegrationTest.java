@@ -8,6 +8,7 @@ import com.example.UserService.exception.user.UserAlreadyExistsException;
 import com.example.UserService.model.dto.UserRequest;
 import com.example.UserService.model.dto.UserResponse;
 import com.example.UserService.service.UserService;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Tag("integration")
 @SpringBootTest
 @Transactional
 public class UserServiceIntegrationTest extends IntegrationTestConfig {

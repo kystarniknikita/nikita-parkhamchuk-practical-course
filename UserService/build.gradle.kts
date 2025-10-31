@@ -46,6 +46,8 @@ dependencies {
 	testImplementation("org.testcontainers:postgresql")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks.test {
+	useJUnitPlatform {
+		excludeTags("integration")
+	}
 }

@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e68ec9a1-fa0d-47ea-9dc9-84be3a987a53" name="Changes" comment=".">
-      <change beforePath="$PROJECT_DIR$/JavaCore/SalsesAndCustomerAnalysis/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/JavaCore/SalsesAndCustomerAnalysis/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +44,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "#14 on feature/user-service/db-schema",
     "last_opened_file_path": "C:/Users/Admin/IdeaProjects/intership-practical-course",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
