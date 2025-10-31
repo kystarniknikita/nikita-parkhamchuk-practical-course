@@ -5,13 +5,17 @@ on:
     branches:
       - main
       - feature/**
+    paths:
+      - 'UserService/**'
   pull_request:
     branches:
       - main
+    paths:
+      - 'UserService/**'
 
 jobs:
   build:
-    name: Build user-service
+    name: Build UserService
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,18 +29,18 @@ jobs:
           cache: gradle
 
       - name: Grant execute permission for Gradle wrapper
-        working-directory: user-service
+        working-directory: UserService
         run: chmod +x ./gradlew
 
       - name: Build project (skip tests)
-        working-directory: user-service
+        working-directory: UserService
         run: ./gradlew clean build -x test
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: user-service-jar
-          path: user-service/build/libs/*.jar
+          path: UserService/build/libs/*.jar
 
   test:
     name: Run tests
@@ -54,12 +58,18 @@ jobs:
           cache: gradle
 
       - name: Grant execute permission for Gradle wrapper
-        working-directory: user-service
+        working-directory: UserService
         run: chmod +x ./gradlew
 
       - name: Run tests
-        working-directory: user-service
+        working-directory: UserService
         run: ./gradlew test
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: UserService/build/test-results/test/
 
   sonarqube:
     name: SonarQube Analysis
@@ -79,11 +89,11 @@ jobs:
           cache: gradle
 
       - name: Grant execute permission for Gradle wrapper
-        working-directory: user-service
+        working-directory: UserService
         run: chmod +x ./gradlew
 
       - name: SonarCloud Scan
-        working-directory: user-service
+        working-directory: UserService
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
@@ -109,7 +119,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
-        working-directory: user-service
+        working-directory: UserService
         run: |
           docker build -t nikitakyst/user-service:latest .
           docker push nikitakyst/user-service:latest
