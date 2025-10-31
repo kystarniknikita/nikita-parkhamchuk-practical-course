@@ -47,13 +47,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
 
       - name: Run tests
         working-directory: UserService
-        run: |
-          chmod +x ./gradlew
-          ./gradlew test -x integrationTest
+        run: ./gradlew :user-service:test
+    
+
+      
 
   sonarqube:
     name: SonarQube Analysis
