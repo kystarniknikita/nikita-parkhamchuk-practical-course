@@ -5,13 +5,9 @@ on:
     branches:
       - main
       - feature/**
-    paths:
-      - 'user-service/**'
   pull_request:
     branches:
       - main
-    paths:
-      - 'user-service/**'
 
 jobs:
   build:
@@ -64,12 +60,6 @@ jobs:
       - name: Run tests
         working-directory: user-service
         run: ./gradlew test
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: user-service/build/test-results/test/
 
   sonarqube:
     name: SonarQube Analysis
