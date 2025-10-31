@@ -61,3 +61,7 @@ tasks.jacocoTestReport {
 		html.required.set(true)
 	}
 }
+
+tasks.named("sonarqube") {
+	dependsOn(tasks.jacocoTestReport)
+}
