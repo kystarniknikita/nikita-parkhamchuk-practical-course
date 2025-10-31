@@ -101,7 +101,9 @@ jobs:
             -Dsonar.projectKey=kystarniknikita_nikita-parkhamchuk-practical-course \
             -Dsonar.organization=kystarniknikita \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
+            
 
   docker:
     name: Build & Push Docker Image
