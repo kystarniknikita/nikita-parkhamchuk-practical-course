@@ -72,4 +72,37 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
+
+    @Test
+    void testGetUserNotFound() throws Exception {
+        Mockito.when(userService.findById(999L))
+                .thenThrow(new RuntimeException("User not found"));
+
+        mockMvc.perform(get("/api/v1/users/999"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void testUpdateUser() throws Exception {
+        UserRequest request = new UserRequest();
+        request.setName("Updated");
+        request.setSurname("User");
+        request.setBirthDate(LocalDateTime.now().minusYears(1));
+        request.setEmail("updated@example.com");
+
+        UserResponse response = new UserResponse();
+        response.setId(1L);
+        response.setName("Updated");
+        response.setSurname("User");
+        response.setBirthDate(request.getBirthDate());
+        response.setEmail(request.getEmail());
+
+        Mockito.when(userService.update(Mockito.eq(1L), Mockito.any(UserRequest.class))).thenReturn(response);
+
+        mockMvc.perform(put("/api/v1/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Updated"));
+    }
 }

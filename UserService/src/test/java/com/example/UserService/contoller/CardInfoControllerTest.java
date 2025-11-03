@@ -72,4 +72,27 @@ class CardInfoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
+
+    @Test
+    void testDeleteCard() throws Exception {
+        Mockito.doNothing().when(cardInfoService).deleteById(1L);
+
+        mockMvc.perform(delete("/api/v1/cards/1"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testGetCardById() throws Exception {
+        CardInfoResponse response = new CardInfoResponse();
+        response.setId(1L);
+        response.setNumber("1234567890123456");
+        response.setHolder("Nikita Kyst");
+
+        Mockito.when(cardInfoService.findCardById(1L)).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/cards/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.number").value("1234567890123456"));
+    }
+
 }
