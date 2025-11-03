@@ -75,12 +75,27 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUserNotFound() throws Exception {
-        Mockito.when(userService.findById(999L))
-                .thenThrow(new RuntimeException("User not found"));
+    void testGetUserByIdSuccess() throws Exception {
+        UserResponse user = new UserResponse();
+        user.setId(1L);
+        user.setName("Nikita");
+        user.setSurname("Kyst");
+        user.setEmail("nikita@example.com");
+
+        Mockito.when(userService.findById(1L)).thenReturn(user);
+
+        mockMvc.perform(get("/api/v1/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Nikita"));
+    }
+
+    @Test
+    void testGetUserByIdNotFound() throws Exception {
+        Mockito.when(userService.findById(999L)).thenThrow(new RuntimeException("User not found"));
 
         mockMvc.perform(get("/api/v1/users/999"))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("User not found"));
     }
 
     @Test
@@ -105,6 +120,22 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Updated"));
+    }
+
+    @Test
+    void testGetUserByEmailSuccess() throws Exception {
+        UserResponse user = new UserResponse();
+        user.setId(1L);
+        user.setName("Nikita");
+        user.setSurname("Kyst");
+        user.setEmail("nikita@example.com");
+
+        Mockito.when(userService.findByEmail("nikita@example.com")).thenReturn(user);
+
+        mockMvc.perform(get("/api/v1/users/email")
+                        .param("email", "nikita@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Nikita"));
     }
 
     @Test
