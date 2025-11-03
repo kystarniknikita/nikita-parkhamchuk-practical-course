@@ -1,4 +1,4 @@
-package com.example.UserService.contoller;
+package com.example.UserService.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,8 +7,6 @@ import com.example.UserService.model.dto.CardInfoRequest;
 import com.example.UserService.model.dto.CardInfoResponse;
 import com.example.UserService.model.dto.UserRequest;
 import com.example.UserService.model.dto.UserResponse;
-import com.example.UserService.service.CardInfoService;
-import com.example.UserService.service.UserService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
