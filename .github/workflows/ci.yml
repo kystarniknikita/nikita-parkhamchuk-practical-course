@@ -38,7 +38,10 @@ jobs:
         working-directory: UserService
         run: |
           ./gradlew clean build -x test
-          echo "jar-path=build/libs/$(ls build/libs/*.jar | xargs -n 1 basename)" >> $GITHUB_OUTPUT
+          JAR_NAME=$(ls build/libs/*.jar | xargs -n 1 basename)
+          echo "jar-path<<EOF" >> $GITHUB_OUTPUT
+          echo "$JAR_NAME" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Upload built JAR
         uses: actions/upload-artifact@v4
