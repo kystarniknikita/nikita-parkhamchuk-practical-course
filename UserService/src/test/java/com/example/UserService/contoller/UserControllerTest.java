@@ -158,4 +158,21 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
+
+    @Test
+    void testDeleteUserSuccess() throws Exception {
+        Mockito.doNothing().when(userService).deleteById(1L);
+
+        mockMvc.perform(delete("/api/v1/users/1"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testDeleteUserNotFound() throws Exception {
+        Mockito.doThrow(new RuntimeException("User not found")).when(userService).deleteById(999L);
+
+        mockMvc.perform(delete("/api/v1/users/999"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("User not found"));
+    }
 }
