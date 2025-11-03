@@ -127,6 +127,11 @@ jobs:
         working-directory: UserService
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: password
+          SPRING_REDIS_HOST: localhost
+          SPRING_REDIS_PORT: 6379
         run: |
           ./gradlew sonarqube \
             -Dsonar.projectKey=kystarniknikita_nikita-parkhamchuk-practical-course \
