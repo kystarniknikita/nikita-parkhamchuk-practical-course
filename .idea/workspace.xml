@@ -4,6 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+    <list default="true" id="e68ec9a1-fa0d-47ea-9dc9-84be3a987a53" name="Changes" comment=".">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     <list default="true" id="e68ec9a1-fa0d-47ea-9dc9-84be3a987a53" name="Changes" comment="init User Service">
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_10_2025_0_42_[Changes]1/fileHashes.lock" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_09_10_2025_0_42_[Changes]1/shelved.patch" beforeDir="false" />
@@ -61,6 +63,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "#14 on feature/user-service/db-schema",
     "git-widget-placeholder": "feature/user-service/db-schema",
     "last_opened_file_path": "C:/Users/Admin/IdeaProjects/intership-practical-course",
     "node.js.detected.package.eslint": "true",
