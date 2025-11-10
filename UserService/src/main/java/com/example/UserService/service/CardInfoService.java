@@ -70,4 +70,10 @@ public class CardInfoService {
 
         cardRepository.delete(card);
     }
+
+    public boolean isCardOwner(Long cardId, String email) {
+        return cardRepository.findById(cardId)
+                .map(card -> card.getUser().getEmail().equals(email))
+                .orElse(false);
+    }
 }
