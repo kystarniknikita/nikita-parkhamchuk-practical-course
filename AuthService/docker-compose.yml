@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  user-service:
+    build:
+      context: .
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth-service
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: auth-service-db
+    restart: always
+    environment:
+      POSTGRES_DB: auth-service
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5433"
+
+volumes:
+  postgres_data:
