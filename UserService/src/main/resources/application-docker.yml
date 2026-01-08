@@ -19,5 +19,16 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/db.changelog-master.yaml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-value: ${JWT_SECRET:mySecretKeymySecretKeymySecretKeymySecretKeymySecretKeymySecretKey}
+
+jwt:
+  secret: ${JWT_SECRET:mySecretKeymySecretKeymySecretKeymySecretKeymySecretKeymySecretKey}
+  expiration: 86400000
+  refresh-expiration: 604800000
+
 server:
   port: 8080

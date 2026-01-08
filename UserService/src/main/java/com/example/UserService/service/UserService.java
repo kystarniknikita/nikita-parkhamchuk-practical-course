@@ -32,14 +32,16 @@ public class UserService {
         userRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
             throw new UserAlreadyExistsException(dto.getEmail());
         });
-
+        System.out.println("111111111111");
         User user = userMapper.toEntity(dto);
 
         if (user.getCards() != null) {
             user.getCards().forEach(user::addCardInfo);
         }
 
+        System.out.println("presave user");
         User saved = userRepository.save(user);
+        System.out.println(saved.getEmail() + saved.getId() + saved.getName());
         return userMapper.toDto(saved);
     }
 

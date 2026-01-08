@@ -1,10 +1,12 @@
 package com.example.AuthService.util;
 
+import com.example.AuthService.model.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,9 @@ public class JwtTokenUtil {
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
+        if (userDetails instanceof User){
+            claims.put("userId", ((User) userDetails).getId());
+        }
         return createToken(claims, userDetails.getUsername(), jwtExpiration);
     }
 

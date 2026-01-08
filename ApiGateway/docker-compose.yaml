@@ -1,0 +1,118 @@
+version: "3.8"
+services:
+  postgres-auth:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: auth-service
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - pg_auth_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+  postgres-user:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: user-service
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_user_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  postgres-order:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: order-service
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg_order_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  auth-service:
+    build:
+      context: ../AuthService
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/auth-service
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      JWT_SECRET: ${JWT_SECRET:-mySecretKeymySecretKeymySecretKeymySecretKey}
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres-auth
+    networks:
+      - backend
+
+  user-service:
+    build:
+      context: ../UserService
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/user-service
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATA_REDIS_HOST: redis
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-user
+      - redis
+    networks:
+      - backend
+
+  order-service:
+    build:
+      context: ../OrderService
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-order:5432/order-service
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      USER_SERVICE_BASE_URL: http://user-service:8080/api/v1/users
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres-order
+      - user-service
+    networks:
+      - backend
+
+  api-gateway:
+    build:
+      context: .
+    environment:
+      JWT_SECRET: ${JWT_SECRET:-mySecretKeymySecretKeymySecretKeymySecretKey}
+    ports:
+      - "8083:8083"
+    depends_on:
+      - auth-service
+      - user-service
+      - order-service
+    networks:
+      - backend
+
+volumes:
+  pg_auth_data:
+  pg_user_data:
+  pg_order_data:
+
+networks:
+  backend:
+    driver: bridge
