@@ -20,25 +20,25 @@ public class CardInfoController {
     private final CardInfoService cardInfoService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@authService.hasAdminRole(authentication)")
     public ResponseEntity<List<CardInfoResponse>> getAll() {
         return ResponseEntity.ok(cardInfoService.findAll());
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("@authService.hasAdminRole(authentication) or @authService.isSelf(#request.getUserId(), authentication)")
     public ResponseEntity<CardInfoResponse> create(@RequestBody @Valid CardInfoRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardInfoService.create(request));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @cardInfoService.isCardOwner(#id, authentication.name)")
+    @PreAuthorize("@authService.hasAdminRole(authentication) or @cardInfoService.isCardOwner(#id, authentication.name)")
     public ResponseEntity<CardInfoResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(cardInfoService.findCardById(id));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @cardInfoService.isCardOwner(#id, authentication.name)")
+    @PreAuthorize("@authService.hasAdminRole(authentication) or @cardInfoService.isCardOwner(#id, authentication.name)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         cardInfoService.deleteById(id);
 
