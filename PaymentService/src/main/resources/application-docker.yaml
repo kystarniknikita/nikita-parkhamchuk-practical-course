@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: PaymentService
+  
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:29092}
+    consumer:
+      group-id: payment-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  liquibase:
+    enabled: false
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+  mongodb:
+    uri: mongodb://mongodb:27017/payments
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  
+server:
+  port: 8084
+
+logging:
+  level:
+    com.example.PaymentService: DEBUG
+    org.springframework.kafka: INFO
+
+external:
+  random-number:
+    url: https://www.random.org/integers/?num=1&min=1&max=1000&col=1&base=10&format=plain&rnd=new
+    timeout: 5
