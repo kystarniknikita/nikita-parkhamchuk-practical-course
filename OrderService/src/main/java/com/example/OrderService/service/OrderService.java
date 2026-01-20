@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,22 +23,29 @@ public class OrderService {
     private final ItemService itemService;
     private final OrderMapper orderMapper;
     private final UserService userService;
+    private final OrderEventProducer orderEventProducer;
 
     @Transactional
     public OrderResponse create(CreateOrderRequest request) {
         UserInfoResponse user = userService.getByEmail(request.getUserEmail());
 
+        System.out.println(user.getId());
+        System.out.println(user.getEmail());
+        System.out.println(user.getName());
         Order order = orderMapper.toEntity(request);
 
         order.setUserId(user.getId());
-
-        System.out.println(order.getUserId());
 
         order.setItems(setOrderItems(request.getOrderItems(), order));
 
         Order saved = orderRepository.save(order);
 
-        return buildOrderResponse(saved);
+        OrderResponse response = buildOrderResponse(saved);
+
+        BigDecimal totalAmount = calculateTotalAmount(saved.getItems());
+        orderEventProducer.publishCreateOrderEvent(saved.getId(), saved.getUserId(), totalAmount);
+
+        return response;
     }
 
     public OrderResponse findById(Long id) {
@@ -101,5 +109,11 @@ public class OrderService {
         }
 
         return orderItems;
+    }
+
+    private BigDecimal calculateTotalAmount(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(item -> item.getItem().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

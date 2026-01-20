@@ -19,8 +19,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
-
 class OrderServiceUnitTest {
 
     @Mock
@@ -31,12 +29,14 @@ class OrderServiceUnitTest {
     private OrderMapper orderMapper;
     @Mock
     private UserService userService;
+    @Mock
+    private OrderEventProducer orderEventProducer;
 
     @InjectMocks
     private OrderService orderService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -49,7 +49,7 @@ class OrderServiceUnitTest {
         oir.setQuantity(2);
         req.setOrderItems(List.of(oir));
 
-        UserInfoResponse user = new UserInfoResponse(5L,"User","1", "u@example.com");
+        UserInfoResponse user = new UserInfoResponse(5L, "User", "1", "u@example.com");
         when(userService.getByEmail("u@example.com")).thenReturn(user);
 
         Order mapped = new Order();
@@ -80,6 +80,9 @@ class OrderServiceUnitTest {
         resp.setId(100L);
         when(orderMapper.toResponse(saved)).thenReturn(resp);
 
+        // Мокаем вызов event producer
+        doNothing().when(orderEventProducer).publishCreateOrderEvent(anyLong(), anyLong(), any(BigDecimal.class));
+
         OrderResponse result = orderService.create(req);
 
         assertNotNull(result);
@@ -90,6 +93,9 @@ class OrderServiceUnitTest {
         assertEquals(5L, toSave.getUserId());
         assertFalse(toSave.getItems().isEmpty());
         verify(itemService).getById(10L);
+
+        // Проверяем, что event producer был вызван
+        verify(orderEventProducer).publishCreateOrderEvent(eq(100L), eq(5L), any(BigDecimal.class));
     }
 
     @Test
@@ -99,7 +105,7 @@ class OrderServiceUnitTest {
         order.setUserId(2L);
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 
-        UserInfoResponse user = new UserInfoResponse(2L,"A", "B", "a@a");
+        UserInfoResponse user = new UserInfoResponse(2L, "A", "B", "a@a");
         when(userService.getById(2L)).thenReturn(user);
 
         OrderResponse resp = new OrderResponse();
@@ -120,19 +126,21 @@ class OrderServiceUnitTest {
 
     @Test
     void findByIds() {
-        Order o1 = new Order(); o1.setId(1L);
-        when(orderRepository.findAllByIdIn(List.of(1L,2L))).thenReturn(List.of(o1));
+        Order o1 = new Order();
+        o1.setId(1L);
+        when(orderRepository.findAllByIdIn(List.of(1L, 2L))).thenReturn(List.of(o1));
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setId(1L);
         when(orderMapper.toResponse(o1)).thenReturn(orderResponse);
-        List<OrderResponse> res = orderService.findByIds(List.of(1L,2L));
+        List<OrderResponse> res = orderService.findByIds(List.of(1L, 2L));
         assertEquals(1, res.size());
         verify(orderRepository).findAllByIdIn(anyList());
     }
 
     @Test
     void findByStatuses() {
-        Order o1 = new Order(); o1.setId(1L);
+        Order o1 = new Order();
+        o1.setId(1L);
         when(orderRepository.findByStatusIn(List.of(OrderStatus.PENDING))).thenReturn(List.of(o1));
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setId(1L);

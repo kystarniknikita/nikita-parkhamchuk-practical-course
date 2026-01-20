@@ -31,9 +31,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+	implementation("org.springframework.kafka:spring-kafka:3.3.10")
 
 	implementation("org.postgresql:postgresql")
 	implementation("org.liquibase:liquibase-core")
+
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("com.fasterxml.jackson.core:jackson-core")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
@@ -47,6 +52,9 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
 
+	testImplementation("org.testcontainers:kafka")
+
+	testImplementation ("com.h2database:h2")
 	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
 
 	testImplementation("org.mockito:mockito-junit-jupiter")
