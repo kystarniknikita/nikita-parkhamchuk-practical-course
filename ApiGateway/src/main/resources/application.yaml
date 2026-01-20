@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: docker
+  application:
+    name: api-gateway
+server:
+  port: 8083
+
+jwt:
+  secret: mySecretKeymySecretKeymySecretKeymySecretKeymySecretKeymySecretKey
