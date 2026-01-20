@@ -20,7 +20,6 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<UserResponse> create(@RequestBody @Valid UserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.create(request));
@@ -39,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/email")
-    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
+   @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UserResponse> getByEmail(@RequestParam String email) {
         return ResponseEntity.ok(userService.findByEmail(email));
     }

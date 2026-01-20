@@ -6,13 +6,13 @@ spring:
       host: localhost
       port: 6379
   datasource:
-    url: jdbc:postgresql://localhost:5432/user-service
+    url: jdbc:postgresql://localhost:5433/user-service
     username: admin
     password: admin
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     open-in-view: false
   application:
     name: user-service

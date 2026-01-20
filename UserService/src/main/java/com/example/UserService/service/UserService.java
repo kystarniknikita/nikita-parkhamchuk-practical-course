@@ -32,9 +32,7 @@ public class UserService {
         userRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
             throw new UserAlreadyExistsException(dto.getEmail());
         });
-
         User user = userMapper.toEntity(dto);
-
         if (user.getCards() != null) {
             user.getCards().forEach(user::addCardInfo);
         }
@@ -43,7 +41,6 @@ public class UserService {
         return userMapper.toDto(saved);
     }
 
-    @Cacheable(key = "#id")
     public UserResponse findById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -55,7 +52,6 @@ public class UserService {
         return userMapper.toDtos(userRepository.findAll());
     }
 
-    @Cacheable(key = "#email")
     public UserResponse findByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));

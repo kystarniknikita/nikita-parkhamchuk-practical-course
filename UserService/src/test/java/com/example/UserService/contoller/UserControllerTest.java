@@ -3,14 +3,18 @@ package com.example.UserService.contoller;
 import com.example.UserService.controller.UserController;
 import com.example.UserService.model.dto.UserRequest;
 import com.example.UserService.model.dto.UserResponse;
+import com.example.UserService.service.AuthorizationService;
 import com.example.UserService.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -21,6 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@WithMockUser(username = "admin", roles = "ADMIN")
 class UserControllerTest {
 
     @Autowired
@@ -29,8 +35,16 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean(name = "authService")
+    private AuthorizationService authService;
+
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        Mockito.when(authService.hasAdminRole(Mockito.any())).thenReturn(true);
+    }
 
     @Test
     void testCreateUser() throws Exception {

@@ -1,5 +1,6 @@
 package com.example.UserService.config;
 
+import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +11,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
 @Testcontainers
+@Import(TestSecurityConfig.class)
 public class IntegrationTestConfig {
 
     @Container

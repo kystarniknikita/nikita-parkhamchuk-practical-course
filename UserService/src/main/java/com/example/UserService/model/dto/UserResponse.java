@@ -1,14 +1,16 @@
 package com.example.UserService.model.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-public class UserResponse implements Serializable{
+@Getter
+@Setter
+public class UserResponse implements Serializable {
     private Long id;
 
     private String name;

@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = CardInfoMapper.class)
 public interface UserMapper {
 
+    @Mapping(target = "id", ignore = true)
     User toEntity(UserRequest dto);
 
     UserResponse toDto(User entity);
